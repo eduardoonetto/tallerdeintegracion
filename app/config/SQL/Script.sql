@@ -75,22 +75,22 @@ CREATE TABLE Vehicles (
 
 CREATE TABLE WorkOrders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    vehicle_id INT, -- ID del vehículo relacionado
+    vehicle_id INT, 
     date_created DATE,
-    status VARCHAR(20), -- Estado de la orden (por ejemplo, "En Proceso", "Completada", "Pendiente")
+    status VARCHAR(20),
     description TEXT,
     FOREIGN KEY (vehicle_id) REFERENCES Vehicles(id)
 );
 CREATE TABLE Services (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    work_order_id INT, -- ID de la orden de trabajo relacionada
+    work_order_id INT, 
     service_name VARCHAR(100),
-    cost DECIMAL(10, 2), -- Costo del servicio
+    cost DECIMAL(10, 2), 
     FOREIGN KEY (work_order_id) REFERENCES WorkOrders(id)
 );
 CREATE TABLE MaterialsUsed (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    service_id INT, -- ID del servicio relacionado
+    service_id INT,
     material_name VARCHAR(100),
     quantity INT,
     cost_per_unit DECIMAL(10, 2),
