@@ -1,38 +1,35 @@
--- Crear la base de datos
+
 CREATE DATABASE integration_workshop;
 USE integration_workshop;
 
--- Crear un usuario con privilegios
+
 CREATE USER 'erp_admin'@'localhost' IDENTIFIED BY 'Hash:12!';
 GRANT ALL PRIVILEGES ON integration_workshop.* TO 'erp_admin'@'localhost';
 FLUSH PRIVILEGES;
 
--- Crear la tabla de usuarios
+
 CREATE TABLE Users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(80),
     email VARCHAR(80) UNIQUE,
-    password VARCHAR(128), -- Recomiendo usar VARCHAR(128) para contraseñas con hash
+    password VARCHAR(128),
     change_password BOOLEAN
 );
 
--- NOTA: Contraseña ABC123 con hash
 INSERT INTO Users (name, email, password, change_password)
 VALUES 	('EDUARDO ONETTO', 'testemail@gmail.com', 'bbf2dead374654cbb32a917afd236656', FALSE),
 		('ALEXIS MONTES', 'testemail2@gmail.com', 'bbf2dead374654cbb32a917afd236656', FALSE),
 		('GUSTAVO LARA', 'testemail3@gmail.com', 'bbf2dead374654cbb32a917afd236656', FALSE),
 		('LORENA PRIETO', 'testemail4@gmail.com', 'bbf2dead374654cbb32a917afd236656', FALSE);
 
--- Crear la tabla de roles
+
 CREATE TABLE Roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(80) UNIQUE -- Asegurar que los nombres de los roles sean únicos
+    name VARCHAR(80) UNIQUE 
 );
-select 
--- Roles predeterminados
+
 INSERT INTO Roles (name) VALUES ('ADMIN'), ('SUPERVISOR'), ('BODEGA'), ('MECANICO');
 
--- Crear la tabla de asignación de roles a usuarios
 CREATE TABLE Users_Roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -41,20 +38,9 @@ CREATE TABLE Users_Roles (
     FOREIGN KEY (role_id) REFERENCES Roles(id)
 );
 
--- Asignar el rol de ADMIN a EDUARDO
 INSERT INTO Users_Roles (user_id, role_id)
 VALUES (1, 1),(2, 2),(3, 3),(4, 4); 
 
--- Ver roles y usuarios asignados usando una vista
-CREATE OR REPLACE VIEW UserRolesView AS
-SELECT
-    U.name AS User_Name,
-    U.email AS User_Email,
-    R.name AS Role_Name
-FROM
-    Users AS U
-JOIN Users_Roles AS UR ON U.id = UR.user_id
-JOIN Roles AS R ON UR.role_id = R.id;
 
 CREATE TABLE Inventories(
          id INT AUTO_INCREMENT PRIMARY KEY,
@@ -74,8 +60,6 @@ CREATE TABLE Customers (
     rut varchar(80)
 );
 
-
-
 CREATE TABLE Vehicles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     make VARCHAR(50),
@@ -83,8 +67,8 @@ CREATE TABLE Vehicles (
     year INT,
     date_in date,
     reason_visit varchar(80),
-    patente VARCHAR(17) UNIQUE, -- Número de identificación del vehículo
-    customer_id INT, -- ID del cliente propietario
+    patente VARCHAR(17) UNIQUE, 
+    customer_id INT, 
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
 
