@@ -37,6 +37,16 @@ $last_value = end($path_parts);
           </a>
         </li>
         <?php } ?>
+        <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN','SUPERVISOR'])){?>
+        <li class="nav-item">
+          <a class="nav-link text-white <?php echo (strpos($last_value, 'ordentrabajo')!==false ? 'active bg-gradient-primary': '' ) ?>" href="../pages/ordentrabajo.php">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">list</i>
+            </div>
+            <span class="nav-link-text ms-1">Orden De Trabajo</span>
+          </a>
+        </li>
+        <?php } ?>
         <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN','SUPERVISOR','MECANICO'])){ ?>
         <li class="nav-item">
           <a class="nav-link text-white <?php echo (strpos($last_value, 'vehicles')!==false ? 'active bg-gradient-primary': '' ) ?>" href="../pages/vehicles.php">
@@ -54,16 +64,6 @@ $last_value = end($path_parts);
               <i class="material-icons opacity-10">local_shipping</i>
             </div>
             <span class="nav-link-text ms-1">Post-Venta</span>
-          </a>
-        </li>
-        <?php } ?>
-        <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN','SUPERVISOR','BODEGA','MECANICO'])){?>
-        <li class="nav-item">
-          <a class="nav-link text-white <?php echo (strpos($last_value, 'ordentrabajo')!==false ? 'active bg-gradient-primary': '' ) ?>" href="../pages/ordentrabajo.php">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">post_add</i>
-            </div>
-            <span class="nav-link-text ms-1">Orden de Trabajo</span>
           </a>
         </li>
         <?php } ?>
@@ -97,6 +97,17 @@ $last_value = end($path_parts);
           </a>
         </li>
         <?php } ?>
+        <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN'])){?>
+        <li class="nav-item">
+          <a class="nav-link text-white <?php echo (strpos($last_value, 'trabajadores')!==false ? 'active bg-gradient-primary': '' ) ?>" href="../pages/trabajadores.php">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">people</i>
+            </div>
+            <span class="nav-link-text ms-1">Trabajadores</span>
+          </a>
+        </li>
+        <?php } ?>
+        
         <!-- <li class="nav-item">
           <a class="nav-link text-white " href="../pages/tables.php">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

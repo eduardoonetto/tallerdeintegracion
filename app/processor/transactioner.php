@@ -6,11 +6,14 @@ include '../controllers/VehicleController.php';
 include '../controllers/InsuranceController.php';
 include '../controllers/InventoryController.php';
 include '../controllers/CustomerController.php';
+include '../controllers/workerController.php';
 $auth = new AuthController();
 $vehicle = new VehicleController();
 $insurance = new InsuranceController();
 $inventory = new InventoryController();
 $customer = new CustomerController();
+$worker = new WorkerController();
+
 
 // Llama al método login
 switch ($_GET['tx']) {
@@ -62,6 +65,17 @@ switch ($_GET['tx']) {
                 $customer->delete_customer($_GET);
             }else{
                 $invencustomertory->new_customer($_POST);
+            }
+            break;
+    case 'worker':
+            if(isset($_POST['action']) and $_POST['action'] == 'new'){
+                $worker->newWorker($_POST);
+            }else if(isset($_POST['action']) and $_POST['action'] == 'edit' and isset($_POST['id'])){
+                $worker->editWorker($_POST);
+            }else if(isset($_GET['action']) and $_GET['action'] == 'delete' and isset($_GET['id'])){
+                $worker->deleteWorker($_GET);
+            }else{
+                $worker->newWorker($_POST);
             }
             break;
 }
