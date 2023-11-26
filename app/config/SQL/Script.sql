@@ -67,8 +67,9 @@ CREATE TABLE Vehicles (
     year INT,
     date_in date,
     reason_visit varchar(80),
-    patente VARCHAR(17) UNIQUE, 
-    customer_id INT, 
+    status VARCHAR(20),
+    patente VARCHAR(17) UNIQUE, -- Número de identificación del vehículo
+    customer_id INT, -- ID del cliente propietario
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
 

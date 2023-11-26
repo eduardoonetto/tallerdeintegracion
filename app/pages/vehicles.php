@@ -144,7 +144,12 @@
                         </select>
                     </div>
                   </div>
+                  <label for="exampleFormControlSelect1" class="ms-0">Detalles</label>
+                  <div class="input-group input-group-dynamic">
+                    <textarea class="form-control" rows="5" placeholder="Mas informacion aqui:" name='description' spellcheck="false"></textarea>
+                  </div>
                 </div>
+                <br>
                 <div class="row">
                     <div class="col-3">
                         <button type="submit" class="btn btn-primary btn-lg">Enviar</button>
@@ -200,6 +205,7 @@
                                 $vehicle_id = $fila['id'];
                                 $vehicle_customer_id = $fila['customer_id'];
                                 $vehicle_reason_visit = $fila['reason_visit'];
+                                $vehicle_status = $fila['status'];
                                 $vehicle_year = $fila['year'];
                                 $vehicle_patente = $fila['patente'];
                                 $jsonData = json_encode(array(
@@ -238,7 +244,7 @@
                         <p class="text-xs text-secondary mb-0"><?= $vehicle_model ?></p>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-secondary">Pendiente</span>
+                        <span class="badge badge-sm bg-gradient-secondary"><?= $vehicle_status ?></span>
                       </td>
                       <td class="align-middle text-center">
                         <span class="text-secondary text-xs font-weight-bold"><?= $vehicle_date_in ?></span>

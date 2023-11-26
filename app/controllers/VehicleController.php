@@ -3,6 +3,7 @@
 // Compare this snippet from app/pages/sign-in.php:
     require_once('../models/VehicleModel.php');
     require_once('../models/CustomerModel.php');
+    require_once('../models/WorkOrdersModel.php');
     require_once '../utils/RequestUtils.php';
     require_once('../config/config.php');
 
@@ -14,6 +15,7 @@
     public function __construct() {
         $this->Vehicle = new VehicleModel();
         $this->Customer = new CustomerModel();
+        $this->WorkOrders = new WorkOrdersModel();
     }
 
     public function get_vehicles() {
@@ -42,7 +44,7 @@
     
         // Itera a través de $_POST para verificar todos los campos
         foreach ($post as $clave => $valor) {
-            if (empty($valor) and $clave != 'id') {
+            if (empty($valor) and $clave != 'id' and $clave != 'customer_id') {
                 $campos_vacios[] = $clave; // Agrega los nombres de los campos vacíos
             }
         }
@@ -63,20 +65,22 @@
         $email      = $post['email'];
         $direccion  = $post['direccion'];
         $razon      = $post['razon'];
+        $description    = $post['description'];
 
         $customerDataId   = $this->Customer->insert_customer($nombre, $rut, $email, $telefono, $direccion);
         if($customerDataId){
-            $vehicleData   = $this->Vehicle->insert_vehicle($fecha_in, $patente, $marca, $modelo, $anio, $razon, $customerDataId);
-            if($vehicleData){
-                //crear session:
-                header("Location: ../pages/vehicles?success=1");
-            }else{
-                header("Location: ../pages/vehicles?error=2");
+            $vehicleDataId   = $this->Vehicle->insert_vehicle($fecha_in, $patente, $marca, $modelo, $anio, $razon, $customerDataId);
+            if($vehicleDataId){
+                //insertar OT:
+                $otData   = $this->WorkOrders->insert_ot($vehicleDataId, $fecha_in,  $razon, $description, 'Pendiente');
+                if($otData){
+                    header("Location: ../pages/vehicles?success=1");
+                }
             }
-        }else{
+        }
+        if(!$customerDataId or !$vehicleDataId or !$otData){
             header("Location: ../pages/vehicles?error=2");
         }
-        
     }
 
     public function edit_vehicle($post) {

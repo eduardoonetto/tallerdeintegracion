@@ -33,23 +33,18 @@ class VehicleModel {
         return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
     }
 
-    public function insert_vehicle($fecha_in, $patente, $marca, $modelo, $year, $razon, $customer_id) {
-        
-        // Construir la consulta SQL directamente con los valores
-        $query = "INSERT INTO " . $this->table . " (date_in, patente, make, model, year,  reason_visit, customer_id) VALUES ('$fecha_in', '$patente', '$marca', '$modelo', '$year', '$razon', '$customer_id')";
-        //nombre, rut, telefono, email, direccion, '$nombre', '$rut', '$telefono', '$email', '$direccion',
-        if ($this->conexion) {
-            // La conexión se ha establecido correctamente
-            $result = mysqli_query($this->conexion, $query);
+    public function insert_vehicle($fecha_in, $patente, $marca, $modelo, $year, $razon, $customer_id, $status = 'Pendiente') {
+        $stmt = $this->conexion->prepare('INSERT INTO Vehicles (date_in, patente, make, model, year, reason_visit, status, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        mysqli_connect_error();
+        $stmt->bind_param('ssssssss', $fecha_in, $patente, $marca, $modelo, $year, $razon, $status, $customer_id);
+        $stmt->execute();
+    
+        if ($stmt->affected_rows > 0) {
+            // Obtener el ID del registro insertado
+            $inserted_id = $this->conexion->insert_id;
+            return $inserted_id;
         } else {
-            echo "Error en la conexión a la base de datos";
-            die();
-        }
-        // Comprobar el resultado
-        if ($result) {
-            return true; // Inserción exitosa
-        } else {
-            return false; // Error en la inserción
+            return false;
         }
     }
 
