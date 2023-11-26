@@ -72,6 +72,13 @@ CREATE TABLE Vehicles (
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
 
+CREATE TABLE Insurances(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    start_date date,
+    end_date date,
+    razon_social varchar(80),
+    cobertura varchar(80)
+    );
 
 CREATE TABLE WorkOrders (
     id INT AUTO_INCREMENT PRIMARY KEY,
