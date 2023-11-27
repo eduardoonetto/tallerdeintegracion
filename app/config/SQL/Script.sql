@@ -89,6 +89,7 @@ CREATE TABLE WorkOrders (
     description TEXT,
     FOREIGN KEY (vehicle_id) REFERENCES Vehicles(id)
 );
+
 CREATE TABLE Services (
     id INT AUTO_INCREMENT PRIMARY KEY,
     work_order_id INT, 
@@ -96,6 +97,7 @@ CREATE TABLE Services (
     cost DECIMAL(10, 2), 
     FOREIGN KEY (work_order_id) REFERENCES WorkOrders(id)
 );
+
 CREATE TABLE MaterialsUsed (
     id INT AUTO_INCREMENT PRIMARY KEY,
     service_id INT,
@@ -104,6 +106,7 @@ CREATE TABLE MaterialsUsed (
     cost_per_unit DECIMAL(10, 2),
     FOREIGN KEY (service_id) REFERENCES Services(id)
 );
+
 CREATE TABLE MaterialInventory (
     id INT AUTO_INCREMENT PRIMARY KEY,
     material_name VARCHAR(100) UNIQUE,

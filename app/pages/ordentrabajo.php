@@ -34,168 +34,146 @@
     <!-- Navbar -->
     <?php require_once('./template/navbar.php'); ?>
     <!-- End Navbar -->
+    <br>
+    <?php
+                        include '../controllers/WorkOrdersController.php';
+                        $workOrders = new WorkOrdersController();
+                        var_dump($_GET['ot']);
+                        $workOrdersData = $workOrders->get_workOrder($_GET['ot']);
+                        $workOrdersData = $workOrdersData[0];
+                        var_dump($workOrdersData);
+
+                       
+                        ?>
     <div class="container-fluid py-4">
-      <div class="row min-vh-6">
-        <div class="col-12 excluir">
+      <div class="row min-vh-80">
+        <div class="col-12">
           <div class="card h-100">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                <h5 class="text-white text-capitalize ps-3">Orden de trabajo</h5>
+                <h5 class="text-white text-capitalize ps-3">Informacion Vehiculo</h5>
               </div>
             </div>
             <div class="card-body">
-              <form action="../processor/transactioner?tx=worker" method="POST">
-                <input type="text" id="id" name="id" value="" hidden class="form-control ">
-                <input type="text" id="action" name="action" value="new" hidden class="form-control ">
+              <form action="../processor/transactioner?tx=vehicle" method="POST">
+              <input type="text" id="id" name="id" value="" hidden class="form-control ">
+              <input type="text" id="action" name="action" value="edit" hidden class="form-control ">
+              <input type="text" id="customer_id" name="customer_id" value="" hidden class="form-control ">
 
-
+              <div class="row">
+                <div class="col-2">
+                  <div class="input-group  input-group-static mb-4">
+                    <label >Fecha Ingreso</label>
+                    <input type="date" required name="fecha_in" disabled id="fecha_in" class="form-control ">
+                  </div>
+                </div>
+              </div>
+              <h5>Datos Vehiculo:</h5>
                 <div class="row">
                   <div class="col-2">
+                    <div class="input-group input-group-static mb-4 mt-4  col">
+                      <label class="form-label">Patente</label>
+                      <input type="text" required id="patente" disabled name="patente" class="form-control ">
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <div class="input-group input-group-static mb-4 mt-4  col">
+                      <label class="form-label">Año</label>
+                      <input type="text" name="anio" id="anio" disabled required class="form-control ">
+                    </div>
+                  </div>
+                  <div class="col-2">
                     <div class="input-group input-group-static mb-4">
-                      <label for="exampleFormControlSelect1" class="ms-0">Vehiculo a reparar</label>
-                      <select class="form-control" id="cargo" name="cargo" required>
-                        <option value="1">1 - Mazda Artis</option>
-                        <option value="2">2 - Daihatsu cuore</option>
-                        <option value="3">3 - Chevrolet Aska</option>
+                      <label for="exampleFormControlSelect1" class="ms-0">Marca</label>
+                      <select class="form-control" id="marca" disabled name="marca" required onchange="cambiarModelos()">
+                        <option value="">Selecciona una marca</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Ford">Ford</option>
+                        <option value="Chevrolet">Chevrolet</option>
+                        <option value="Volkswagen">Volkswagen</option>
+                        <option value="Nissan">Nissan</option>
+                        <option value="Hyundai">Hyundai</option>
+                        <option value="BMW">BMW</option>
+                        <option value="Mercedes-Benz">Mercedes-Benz</option>
+                        <option value="Audi">Audi</option>
                       </select>
                     </div>
                   </div>
                   <div class="col-2">
                     <div class="input-group input-group-static mb-4">
-                      <label for="exampleFormControlSelect1" class="ms-0">Aseguradora</label>
-                      <select class="form-control" id="cargo" name="cargo" required>
-                        <option value="1">Bci</option>
-                        <option value="2">Liberty</option>
-                        <option value="3">Mapre</option>
-                        <option value="4">Fallabella Seguros</option>
+                      <label for="exampleFormControlSelect1" class="ms-0">Modelo</label>
+                      <select class="form-control" name="modelo" disabled id="modelo" required id="modelo">
+                        <option value="">Selecciona una marca primero</option>
                       </select>
                     </div>
                   </div>
+                 
+                </div>
+                <h5>Datos Dueño:</h5>
+                <div class="row">
                   <div class="col-2">
-                    <div class="iinput-group input-group-static mb-4">
-                      <label>Fecha Ingreso</label>
-                      <input type="date" required name="fecha_in" id="fecha_in" class="form-control ">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label class="form-label">Nombre Dueño</label>
+                      <input type="text" name="nombre" id="nombre" disabled required class="form-control ">
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4">
-                      <label for="exampleFormControlSelect1" class="ms-0">Estado</label>
-                      <select class="form-control" id="cargo" name="cargo" required>
-                        <option value="1">Desabolladura</option>
-                        <option value="2">Pintura</option>
-                        <option value="3">Listo para entrega</option>
-                        <option value="4">Despachado</option>
-                      </select>
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label class="form-label">RUT</label>
+                      <input type="text" id="rut" name="rut" disabled required class="form-control ">
+                      <p id="mensaje"></p>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label class="form-label">Correo Electronico</label>
+                      <input type="email" name="email" id="email" disabled required class="form-control ">
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label class="form-label">Telefono</label>
+                      <input type="text" name="telefono" id="telefono" disabled  required class="form-control ">
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label class="form-label">Direccion</label>
+                      <input type="text" name="direccion" id="direccion" disabled required class="form-control ">
                     </div>
                   </div>
                 </div>
+                <h5>Razon de visita:</h5>
                 <div class="row">
-
-                  <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
-                      <thead>
-                        <tr>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rut</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nombre</th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cargo</th>
-                          <th class="text-secondary opacity-7"></th>
-                          <th class="text-secondary opacity-7"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php
-                        include '../controllers/WorkerController.php';
-                        $Worker = new WorkerController();
-                        $WorkerData = $Worker->getTrabajadores();
-                        if ($WorkerData and count($WorkerData) > 0) {
-                          // Recorre los resultados utilizando un bucle foreach
-                          foreach ($WorkerData as $fila) {
-                            $worker_id = $fila['id'];
-                            $worker_rut = $fila['rut'];
-                            $worker_nombre = $fila['nombre'];
-                            switch ($fila['id_worker_role']) {
-                              case '1':
-                                $worker_cargo = "Desabollador";
-                                break;
-                              case '2':
-                                $worker_cargo = "Pintor";
-                                break;
-                              case '3':
-                                $worker_cargo = "Preparador";
-                                break;
-                              case '4':
-                                $worker_cargo = "Pulidor";
-                                break;
-                              case '5':
-                                $worker_cargo = "Mecanico";
-                                break;
-
-                              default:
-                                $worker_cargo = "Desabollador";
-                                break;
-                            }
-                            $jsonData = json_encode(array(
-                              'worker_id' => $worker_id,
-                              'worker_rut' => $worker_rut,
-                              'worker_nombre' => $worker_nombre,
-                              'worker_cargo' => $fila['id_worker_role']
-                            ));
-
-
-                        ?>
-                            <tr>
-                              <td>
-                                <div class="d-flex px-2 py-1">
-                                  <div>
-                                    <img src="https://cdn.iconscout.com/icon/free/png-256/free-user-1648810-1401302.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                                  </div>
-                                  <div class="d-flex flex-column justify-content-center">
-                                    <h6 class="mb-0 text-sm"><?= $worker_rut ?></h6>
-                                  </div>
-                                </div>
-                              </td>
-                              <td>
-                                <p class="text-xs font-weight-bold mb-0"><?= $worker_nombre ?></p>
-                              </td>
-                              <td class="align-middle text-center">
-                                <span class="text-secondary text-xs font-weight-bold"><?= $worker_cargo ?></span>
-                              </td>
-                              <td class="align-middle">
-                                <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-warning excluir" data-toggle="tooltip" onclick="CargaData(<?php echo htmlspecialchars($jsonData, ENT_QUOTES, 'UTF-8') ?> )" data-original-title="Edit user">
-                                  Edit
-                                </a>
-                              </td>
-                              <td class="align-middle">
-                                <a class="text-secondary font-weight-bold text-xs text-danger excluir" data-toggle="tooltip" href="../processor/transactioner?tx=worker&id=<?php echo $worker_id ?>&action=delete" data-original-title="Delete user">
-                                  Borrar
-                                </a>
-                              </td>
-                            </tr>
-                        <?php
-                          }
-                        } else {
-                          echo "&#160;&#160;&#160;&#160;&#160;No se encontraron resultados";
-                        }
-                        ?>
-
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="row">
-                    <div class="col-3">
-                      <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+                  <div class="col-2">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                        <label for="exampleFormControlSelect1" class="ms-0">Razon</label>
+                        <select class="form-control" id="razon" disabled  name="razon">
+                            <option value="">Selecciona una razon</option>
+                            <option value="Desabolladura">Desabolladura</option>
+                            <option value="Pintura">Pintura</option>
+                            <option value="Desabolladura y Pintura">Desabolladura y Pintura</option>
+                        </select>
                     </div>
                   </div>
+                  <label for="exampleFormControlSelect1" class="ms-0">Detalles</label>
+                  <div class="input-group input-group-dynamic">
+                    <textarea class="form-control"  disabled rows="5" placeholder="Mas informacion aqui:" name='description' spellcheck="false"></textarea>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-primary btn-lg">Enviar</button>
+                    </div>
+                </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-
-
-
-      <br>
-      <br>
+                
       <!-- TABLAS -->
       <center>
         <img src="../assets/img/logonegro.png" id="logoreporte" style="width:50%;height: auto;margin-top:-50px;display:none" alt="main_logo">

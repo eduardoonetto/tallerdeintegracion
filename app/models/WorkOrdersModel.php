@@ -2,7 +2,7 @@
 class WorkOrdersModel {
     private $conexion;
     private $table = 'workorders';
-    
+
     public function __construct() {
         $this->conexion = $this->createConnection();
     }
@@ -13,8 +13,32 @@ class WorkOrdersModel {
         return $conexion; // Asumiendo que $conexion es el nombre de la variable en ConnectionSql.php
     }
 
-    public function get_ot() {
-        $query = "SELECT * FROM " . $this->table;
+    public function get_ot_by_id($id) {
+        // Consulta SQL
+        $query = "SELECT
+        Customers.id AS customer_id,
+        Customers.name,
+        Customers.email,
+        Customers.phone,
+        Customers.address,
+        Customers.rut,
+        Vehicles.id AS vehicle_id,
+        Vehicles.make,
+        Vehicles.model,
+        Vehicles.year,
+        Vehicles.reason_visit,
+        Vehicles.patente,
+        WorkOrders.id AS workorder_id,
+        WorkOrders.date_created,
+        WorkOrders.status as status_order,
+        WorkOrders.description
+        FROM
+        Customers
+        JOIN
+        Vehicles ON Customers.id = Vehicles.customer_id
+        JOIN
+        WorkOrders ON Vehicles.id = WorkOrders.vehicle_id";
+
         $resultado = mysqli_query($this->conexion, $query);
         mysqli_close($this->conexion);
         return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
