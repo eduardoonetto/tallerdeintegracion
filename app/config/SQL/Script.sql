@@ -43,13 +43,13 @@ VALUES (1, 1),(2, 2),(3, 3),(4, 4);
 
 
 CREATE TABLE Inventories(
-         id INT AUTO_INCREMENT PRIMARY KEY,
-         item varchar(80),
-         categoria varchar(80),
-         valor varchar(80),
-         umbral varchar(80),
-         cantidad varchar(80)
-         );
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item varchar(80),
+    categoria varchar(80),
+    valor varchar(80),
+    umbral varchar(80),
+    cantidad varchar(80)
+);
 
 CREATE TABLE Customers (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,8 +68,8 @@ CREATE TABLE Vehicles (
     date_in date,
     reason_visit varchar(80),
     status VARCHAR(20),
-    patente VARCHAR(17) UNIQUE, -- Número de identificación del vehículo
-    customer_id INT, -- ID del cliente propietario
+    patente VARCHAR(17) UNIQUE, 
+    customer_id INT,
     FOREIGN KEY (customer_id) REFERENCES Customers(id)
 );
 
@@ -83,33 +83,21 @@ CREATE TABLE Insurances(
 
 CREATE TABLE WorkOrders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    vehicle_id INT, 
+    vehicle_id INT,
     date_created DATE,
     status VARCHAR(20),
     description TEXT,
-    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(id)
-);
-
-CREATE TABLE Services (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    work_order_id INT, 
-    service_name VARCHAR(100),
-    cost DECIMAL(10, 2), 
-    FOREIGN KEY (work_order_id) REFERENCES WorkOrders(id)
+    user_id INT,
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicles(id),
+    FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
 CREATE TABLE MaterialsUsed (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    service_id INT,
     material_name VARCHAR(100),
     quantity INT,
-    cost_per_unit DECIMAL(10, 2),
-    FOREIGN KEY (service_id) REFERENCES Services(id)
+    total INT,
+    work_order_id INT, 
+    FOREIGN KEY (work_order_id) REFERENCES WorkOrders(id)
 );
 
-CREATE TABLE MaterialInventory (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    material_name VARCHAR(100) UNIQUE,
-    quantity INT,
-    unit_price DECIMAL(10, 2)
-);

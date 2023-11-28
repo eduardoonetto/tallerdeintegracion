@@ -38,13 +38,12 @@
     <?php
                         include '../controllers/WorkOrdersController.php';
                         $workOrders = new WorkOrdersController();
-                        var_dump($_GET['ot']);
                         $workOrdersData = $workOrders->get_workOrder($_GET['ot']);
                         $workOrdersData = $workOrdersData[0];
-                        var_dump($workOrdersData);
 
                        
                         ?>
+<form action="../processor/transactioner?tx=ot" method="POST">
     <div class="container-fluid py-4">
       <div class="row min-vh-80">
         <div class="col-12">
@@ -55,56 +54,46 @@
               </div>
             </div>
             <div class="card-body">
-              <form action="../processor/transactioner?tx=vehicle" method="POST">
-              <input type="text" id="id" name="id" value="" hidden class="form-control ">
+              
+              <input type="text" id="id" name="id" value="<?= $workOrdersData['vehicle_id'] ?>" hidden class="form-control ">
               <input type="text" id="action" name="action" value="edit" hidden class="form-control ">
-              <input type="text" id="customer_id" name="customer_id" value="" hidden class="form-control ">
+              <input type="text" id="customer_id" name="customer_id" value="<?= $workOrdersData['customer_id'] ?>" hidden class="form-control ">
 
               <div class="row">
                 <div class="col-2">
-                  <div class="input-group  input-group-static mb-4">
-                    <label >Fecha Ingreso</label>
-                    <input type="date" required name="fecha_in" disabled id="fecha_in" class="form-control ">
+                <div class="input-group input-group-static mb-4">
+                    <label class="ms-0">Fecha Ingreso</label>
+                    <input type="date" required name="fecha_in" disabled id="fecha_in" value="<?= $workOrdersData['date_created'] ?>" class="form-control ">
                   </div>
                 </div>
               </div>
               <h5>Datos Vehiculo:</h5>
                 <div class="row">
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4  col">
-                      <label class="form-label">Patente</label>
-                      <input type="text" required id="patente" disabled name="patente" class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Patente</label>
+                      <input type="text" required id="patente" disabled value="<?= $workOrdersData['patente'] ?>" name="patente" class="form-control ">
                     </div>
                   </div>
                   <div class="col-1">
-                    <div class="input-group input-group-static mb-4 mt-4  col">
-                      <label class="form-label">Año</label>
-                      <input type="text" name="anio" id="anio" disabled required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Año</label>
+                      <input type="text" name="anio" id="anio" value="<?= $workOrdersData['year'] ?>"  disabled required class="form-control ">
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4">
+                  <div class="input-group input-group-static mb-4">
                       <label for="exampleFormControlSelect1" class="ms-0">Marca</label>
-                      <select class="form-control" id="marca" disabled name="marca" required onchange="cambiarModelos()">
-                        <option value="">Selecciona una marca</option>
-                        <option value="Toyota">Toyota</option>
-                        <option value="Honda">Honda</option>
-                        <option value="Ford">Ford</option>
-                        <option value="Chevrolet">Chevrolet</option>
-                        <option value="Volkswagen">Volkswagen</option>
-                        <option value="Nissan">Nissan</option>
-                        <option value="Hyundai">Hyundai</option>
-                        <option value="BMW">BMW</option>
-                        <option value="Mercedes-Benz">Mercedes-Benz</option>
-                        <option value="Audi">Audi</option>
+                      <select class="form-control" id="marca" disabled name="marca" required">
+                        <option value="<?= $workOrdersData['make'] ?>"><?= $workOrdersData['make'] ?></option>
                       </select>
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4">
+                  <div class="input-group input-group-static mb-4">
                       <label for="exampleFormControlSelect1" class="ms-0">Modelo</label>
                       <select class="form-control" name="modelo" disabled id="modelo" required id="modelo">
-                        <option value="">Selecciona una marca primero</option>
+                        <option value="<?= $workOrdersData['model'] ?>"><?= $workOrdersData['model'] ?></option>
                       </select>
                     </div>
                   </div>
@@ -113,73 +102,59 @@
                 <h5>Datos Dueño:</h5>
                 <div class="row">
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Nombre Dueño</label>
-                      <input type="text" name="nombre" id="nombre" disabled required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Nombre Dueño</label>
+                      <input type="text" name="nombre" id="nombre" value="<?= $workOrdersData['name'] ?>" disabled required class="form-control ">
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">RUT</label>
-                      <input type="text" id="rut" name="rut" disabled required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">RUT</label>
+                      <input type="text" id="rut" value="<?= $workOrdersData['rut'] ?>" name="rut" disabled required class="form-control ">
                       <p id="mensaje"></p>
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Correo Electronico</label>
-                      <input type="email" name="email" id="email" disabled required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Correo Electronico</label>
+                      <input type="email" name="email" value="<?= $workOrdersData['email'] ?>" id="email" disabled required class="form-control ">
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Telefono</label>
-                      <input type="text" name="telefono" id="telefono" disabled  required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Telefono</label>
+                      <input type="text" name="telefono" value="<?= $workOrdersData['phone'] ?>" id="telefono" disabled  required class="form-control ">
                     </div>
                   </div>
                   <div class="col-3">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Direccion</label>
-                      <input type="text" name="direccion" id="direccion" disabled required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Direccion</label>
+                      <input type="text" name="direccion" id="direccion" value="<?= $workOrdersData['address'] ?>" disabled required class="form-control ">
                     </div>
                   </div>
                 </div>
                 <h5>Razon de visita:</h5>
                 <div class="row">
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                        <label for="exampleFormControlSelect1" class="ms-0">Razon</label>
-                        <select class="form-control" id="razon" disabled  name="razon">
-                            <option value="">Selecciona una razon</option>
-                            <option value="Desabolladura">Desabolladura</option>
-                            <option value="Pintura">Pintura</option>
-                            <option value="Desabolladura y Pintura">Desabolladura y Pintura</option>
-                        </select>
+                    <div class="input-group input-group-static mb-4">
+                          <label for="exampleFormControlSelect1" class="ms-0">Razon</label>
+                          <select class="form-control" id="razon" disabled  name="razon">
+                              <option value="<?= $workOrdersData['reason_visit'] ?>"><?= $workOrdersData['reason_visit'] ?></option>
+                          </select>
                     </div>
                   </div>
                   <label for="exampleFormControlSelect1" class="ms-0">Detalles</label>
                   <div class="input-group input-group-dynamic">
-                    <textarea class="form-control"  disabled rows="5" placeholder="Mas informacion aqui:" name='description' spellcheck="false"></textarea>
+                    <textarea class="form-control"  disabled rows="3" name='description' spellcheck="false"><?= $workOrdersData['description'] ?>.</textarea>
                   </div>
                 </div>
                 <br>
-                <div class="row">
-                    <div class="col-3">
-                        <button type="submit" class="btn btn-primary btn-lg">Enviar</button>
-                    </div>
-                </div>
-              </form>
+                
             </div>
           </div>
         </div>
       </div>
-                
-      <!-- TABLAS -->
-      <center>
-        <img src="../assets/img/logonegro.png" id="logoreporte" style="width:50%;height: auto;margin-top:-50px;display:none" alt="main_logo">
-      </center>
 
-      <br>
 
 
 
@@ -189,6 +164,67 @@
 
 
     </div>
+    <div class="container-fluid py-4">
+      <div class="row min-vh-80">
+        <div class="col-12">
+          <div class="card h-100">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h5 class="text-white text-capitalize ps-3">Materiales Utilizados</h5>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="products-container">
+                <!-- Contenido existente -->
+                <div class="row">
+                  <div class="col-3">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label for="exampleFormControlSelect1" class="ms-0">Item</label>
+                      <select class="form-control item" id="item" onchange="actualizarPrecio(this)" name="item[]">
+                        <option value="">Seleccione un producto</option>
+                        <?php
+                          include '../controllers/InventoryController.php';
+                          $inventory = new InventoryController();
+                          $inventoryData = $inventory->get_inventories();
+                          if ($inventoryData and count($inventoryData) > 0) {
+                              // Recorre los resultados utilizando un bucle foreach
+                              foreach ($inventoryData as $fila) { 
+                                  $inventory_id = $fila['id'];
+                                  $inventory_item = $fila['item'];
+                                  $inventory_valor = $fila['valor'];
+                                  echo "<option value=" . $inventory_id . " data-valor='" . $inventory_valor . "'>". $inventory_item ."</option>";
+                              }
+                          }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label for="exampleFormControlSelect1" class="ms-0">Cantidad</label>
+                      <input type="text" required id="item_qty" name="cantidad[]"  onchange="actualizarPrecio(this)" value="1" class="form-control cantidad">
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label for="total" class="ms-0">Precio Total</label>
+                      <input type="text" id="total" name="total[]" class="form-control total" readonly>
+                      </div>
+                  </div>
+                </div>
+                <div id="productos-dinamicos"></div>
+                <!-- Fin del contenido existente -->
+             
+            </div>
+            <div class="col-1">
+                <button  type="button" onclick="agregarProducto()" class="btn btn-primary">Agregar Producto</button>
+              </div>
+          </div>
+        </div>
+      </div>    
+    </div>
+</form> 
+
   </main>
   <?php require_once('./template/customizer.php'); ?>
   </div>
@@ -202,7 +238,43 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.1.0"></script>
+  <script>
+let contadorProductos = 1; // Inicializamos en 1 ya que ya hay una fila existente.
 
+function agregarProducto() {
+      const container = document.getElementById("products-container");
+      const nuevaFila = container.firstElementChild.cloneNode(true);
+
+      contadorProductos++;
+
+      // Cambia los IDs de los nuevos elementos
+      const nuevoItem = nuevaFila.querySelector(".item");
+      nuevoItem.id = `producto${contadorProductos}`;
+
+      const nuevaCantidad = nuevaFila.querySelector(".cantidad");
+      nuevaCantidad.id = `cantidad${contadorProductos}`;
+      nuevaCantidad.setAttribute("data-valor", "0"); // Puedes establecerlo en el valor predeterminado deseado
+
+      const nuevoTotal = nuevaFila.querySelector(".total");
+      nuevoTotal.id = `total${contadorProductos}`;
+      nuevoTotal.value = ""; // Limpia el valor del nuevo total
+
+      container.appendChild(nuevaFila);
+    }
+
+    function actualizarPrecio(elemento) {
+      const container = elemento.closest(".row");
+      const selectItem = container.querySelector(".item");
+      const valorSeleccionado = selectItem.options[selectItem.selectedIndex].getAttribute("data-valor");
+      const cantidadInput = container.querySelector(".cantidad");
+      const totalInput = container.querySelector(".total");
+
+      const cantidad = cantidadInput.value;
+      const precioTotal = valorSeleccionado * cantidad;
+
+      totalInput.value = precioTotal;
+    }
+  </script>
 </body>
 
 </html>
