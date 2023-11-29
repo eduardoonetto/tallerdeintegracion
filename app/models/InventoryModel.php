@@ -6,8 +6,6 @@ class InventoryModel {
     public function __construct() {
         $this->conexion = $this->createConnection();
     }
-
-
     
     private function createConnection() {
         // Incluye el archivo que configura la conexión y devuelve la conexión

@@ -2,12 +2,36 @@
 class UserModel {
     private $conexion;
     private $table = 'users';
+    
     public function __construct() {
-        $this->conexion = require_once('../config/ConnectionSql.php');
+        $this->conexion = $this->createConnection();
+    }
+
+    private function createConnection() {
+        // Incluye el archivo que configura la conexión y devuelve la conexión
+        require('../config/ConnectionSql.php');
+        return $conexion; 
     }
 
     public function obtenerUsuarios() {
         $query = "SELECT * FROM " . $this->table;
+        $resultado = mysqli_query($this->conexion, $query);
+        mysqli_close($this->conexion);
+        return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+    }
+
+    public function get_mecanicos(){
+        $query = "SELECT
+        U.name AS user_name,
+        U.id AS user_id,
+        U.email AS user_email,
+        R.name AS role_name
+        FROM
+            Users AS U
+        JOIN Users_Roles AS UR ON U.id = UR.user_id
+        JOIN Roles AS R ON UR.role_id = R.id
+        where R.name = 'MECANICO'";
+
         $resultado = mysqli_query($this->conexion, $query);
         mysqli_close($this->conexion);
         return mysqli_fetch_all($resultado, MYSQLI_ASSOC);

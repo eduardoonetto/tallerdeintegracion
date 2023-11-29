@@ -37,7 +37,8 @@ class WorkOrdersModel {
         JOIN
         Vehicles ON Customers.id = Vehicles.customer_id
         JOIN
-        WorkOrders ON Vehicles.id = WorkOrders.vehicle_id";
+        WorkOrders ON Vehicles.id = WorkOrders.vehicle_id
+        WHERE WorkOrders.id = $id";
 
         $resultado = mysqli_query($this->conexion, $query);
         mysqli_close($this->conexion);

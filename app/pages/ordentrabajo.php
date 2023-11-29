@@ -165,7 +165,7 @@
 
     </div>
     <div class="container-fluid py-4">
-      <div class="row min-vh-80">
+      <div class="row min-vh-60">
         <div class="col-12">
           <div class="card h-100">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -212,12 +212,70 @@
                       </div>
                   </div>
                 </div>
-                <div id="productos-dinamicos"></div>
                 <!-- Fin del contenido existente -->
-             
+                <div id="productos-dinamicos"></div>
+            </div>
+            <div class="col-3">
+              <div class="input-group input-group-static mb-4 mt-4">
+                <label for="exampleFormControlSelect1" class="ms-0">Aseguradora</label>
+                <select class="form-control aseguradora" id="aseguradora" onchange="actualizarPrecio(this)" name="aseguradora">
+                  <option value="">-- Aseguradora --</option>
+                  <?php
+                    include '../controllers/InsuranceController.php';
+                    $insurance = new InsuranceController();
+                    $insuranceData = $insurance->get_insurances();
+                    if ($insuranceData and count($insuranceData) > 0) {
+                        // Recorre los resultados utilizando un bucle foreach
+                        foreach ($insuranceData as $fila) { 
+                            $insurance_id = $fila['id'];
+                            $insurance_start = $fila['start_date'];
+                            $insurance_end = $fila['end_date'];
+                            $insurance_razon_social = $fila['razon_social'];
+                            $insurance_cobertura = $fila['cobertura'];
+                            $insurance_status = ($insurance_end > date("Y-m-d")) ? "Vigente" : "Vencido";
+                            if($insurance_status == "Vigente"){
+                              echo "<option value=" . $insurance_id . " data-cobertura='" . $insurance_cobertura . "'>". $insurance_razon_social ."</option>";
+                            }
+                        }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-1">
+              <div class="input-group input-group-dynamic mb-4">
+                <span class="input-group-text">$ CLP</span>
+                <input type="text" id="suma-total" name="suma_total" class="form-control" readonly>
+              </div>
             </div>
             <div class="col-1">
                 <button  type="button" onclick="agregarProducto()" class="btn btn-primary">Agregar Producto</button>
+            </div>
+            <h5>Responsable:</h5>
+            <div class="col-2">
+              <div class="input-group input-group-static mb-4 mt-4">
+                <label for="exampleFormControlSelect1" class="ms-0">Mecanico</label>
+                <select class="form-control" id="mecanico" name="mecanico">
+                  <option value="">-- MECANICO --</option>
+                  <?php
+                    include '../controllers/UserController.php';
+                    $user = new UserController();
+                    $userData = $user->get_mecanicos();
+                    if ($userData and count($userData) > 0) {
+                        // Recorre los resultados utilizando un bucle foreach
+                        foreach ($userData as $fila) { 
+                            $user_id = $fila['user_id'];
+                            $user_name = $fila['user_name'];
+                            echo "<option value=" . $user_id . ">". $user_name ."</option>";
+                        }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            
+              <div class="" >
+                  <button type="submit" class="btn bg-gradient-success btn-lg w-100 " style="justify-content: center;margin: auto;">Guardar</button>
               </div>
           </div>
         </div>
@@ -268,11 +326,31 @@ function agregarProducto() {
       const valorSeleccionado = selectItem.options[selectItem.selectedIndex].getAttribute("data-valor");
       const cantidadInput = container.querySelector(".cantidad");
       const totalInput = container.querySelector(".total");
-
+      const sumaTotalInput = document.getElementById("suma-total");
+      let sumaTotal = 0;
       const cantidad = cantidadInput.value;
       const precioTotal = valorSeleccionado * cantidad;
+      // Obtener el valor de la cobertura de la aseguradora seleccionada
+      const selectAseguradora = document.getElementById("aseguradora");
+      const cobertura = selectAseguradora.options[selectAseguradora.selectedIndex].getAttribute("data-cobertura");
 
       totalInput.value = precioTotal;
+      
+      // Recorre todas las filas y suma los totales
+      const filas = document.querySelectorAll("#products-container .row");
+      filas.forEach((fila) => {
+        console.log(fila);
+          const totalInput = fila.querySelector(".total");
+          const total = parseFloat(totalInput.value) || 0; // Convierte el valor a número, o usa 0 si no es un número
+          sumaTotal += total;
+      });
+      // Aplicar descuento de la cobertura
+      if (cobertura) {
+        const descuento = sumaTotal * cobertura;
+        sumaTotal -= descuento;
+      }
+      sumaTotalInput.value = sumaTotal.toFixed(0); // Formatea el resultado con dos decimales
+      
     }
   </script>
 </body>
