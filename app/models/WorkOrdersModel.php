@@ -30,8 +30,10 @@ class WorkOrdersModel {
         Vehicles.patente,
         WorkOrders.id AS workorder_id,
         WorkOrders.date_created,
+        WorkOrders.total_amount,
         WorkOrders.status as status_order,
-        WorkOrders.description
+        WorkOrders.description,
+        WorkOrders.user_id
         FROM
         Customers
         JOIN
@@ -44,6 +46,7 @@ class WorkOrdersModel {
         mysqli_close($this->conexion);
         return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
     }
+
 
     public function insert_ot($vehicleDataId, $fecha_in,  $razon, $description, $status) {
         $stmt = $this->conexion->prepare('INSERT INTO WorkOrders (vehicle_id, date_created, status, description) VALUES (?, ?, ?, ?)');

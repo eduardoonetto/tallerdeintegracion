@@ -88,16 +88,20 @@ CREATE TABLE WorkOrders (
     status VARCHAR(20),
     description TEXT,
     user_id INT,
+    total_amount INT null DEFAULT 0,
+    insurance_id INT NULL DEFAULT 0,
     FOREIGN KEY (vehicle_id) REFERENCES Vehicles(id),
-    FOREIGN KEY (user_id) REFERENCES Users(id)
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    FOREIGN KEY (insurance_id) REFERENCES Insurances(id)
 );
 
 CREATE TABLE MaterialsUsed (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    material_name VARCHAR(100),
-    quantity INT,
+    inventories_id VARCHAR(100),
+    quantity_used INT,
     total INT,
     work_order_id INT, 
-    FOREIGN KEY (work_order_id) REFERENCES WorkOrders(id)
+    FOREIGN KEY (work_order_id) REFERENCES WorkOrders(id),
+    FOREIGN KEY (inventories_id) REFERENCES Inventories(id)
 );
 

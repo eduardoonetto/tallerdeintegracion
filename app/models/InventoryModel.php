@@ -16,7 +16,6 @@ class InventoryModel {
     public function get_inventories() {
             $query = "SELECT * FROM " . $this->table;
             $resultado = mysqli_query($this->conexion, $query);
-            mysqli_close($this->conexion);
             return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
     }
 

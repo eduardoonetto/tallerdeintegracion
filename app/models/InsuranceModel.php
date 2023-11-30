@@ -20,7 +20,7 @@ class InsuranceModel {
     }
 
     public function get_insurances() {
-            $query = "SELECT * FROM " . $this->table;
+            $query = "SELECT * FROM " . $this->table ." ORDER BY cobertura ASC";
             $resultado = mysqli_query($this->conexion, $query);
             mysqli_close($this->conexion);
             return mysqli_fetch_all($resultado, MYSQLI_ASSOC);

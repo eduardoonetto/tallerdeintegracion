@@ -25,7 +25,63 @@
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
   <script src="../assets/js/trabajadores.js"></script>
+  <script>
+let contadorProductos = 1; // Inicializamos en 1 ya que ya hay una fila existente.
 
+function agregarProducto() {
+      const container = document.getElementById("products-container");
+      const nuevaFila = container.firstElementChild.cloneNode(true);
+
+      contadorProductos++;
+
+      // Cambia los IDs de los nuevos elementos
+      const nuevoItem = nuevaFila.querySelector(".item");
+      nuevoItem.id = `producto${contadorProductos}`;
+
+      const nuevaCantidad = nuevaFila.querySelector(".cantidad");
+      nuevaCantidad.id = `cantidad${contadorProductos}`;
+      nuevaCantidad.setAttribute("data-valor", "0"); // Puedes establecerlo en el valor predeterminado deseado
+
+      const nuevoTotal = nuevaFila.querySelector(".total");
+      nuevoTotal.id = `total${contadorProductos}`;
+      nuevoTotal.value = ""; // Limpia el valor del nuevo total
+
+      container.appendChild(nuevaFila);
+    }
+
+    function actualizarPrecio(elemento) {
+      const container = elemento.closest(".row");
+      const selectItem = container.querySelector(".item");
+      const valorSeleccionado = selectItem.options[selectItem.selectedIndex].getAttribute("data-valor");
+      const cantidadInput = container.querySelector(".cantidad");
+      const totalInput = container.querySelector(".total");
+      const sumaTotalInput = document.getElementById("suma-total");
+      let sumaTotal = 0;
+      const cantidad = cantidadInput.value;
+      const precioTotal = valorSeleccionado * cantidad;
+      // Obtener el valor de la cobertura de la aseguradora seleccionada
+      const selectAseguradora = document.getElementById("aseguradora");
+      const cobertura = selectAseguradora.options[selectAseguradora.selectedIndex].getAttribute("data-cobertura");
+
+      totalInput.value = precioTotal;
+      
+      // Recorre todas las filas y suma los totales
+      const filas = document.querySelectorAll("#products-container .row");
+      filas.forEach((fila) => {
+        console.log(fila);
+          const totalInput = fila.querySelector(".total");
+          const total = parseFloat(totalInput.value) || 0; // Convierte el valor a número, o usa 0 si no es un número
+          sumaTotal += total;
+      });
+      // Aplicar descuento de la cobertura
+      if (cobertura) {
+        const descuento = sumaTotal * cobertura;
+        sumaTotal -= descuento;
+      }
+      sumaTotalInput.value = sumaTotal.toFixed(0); // Formatea el resultado con dos decimales
+      
+    }
+  </script>
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
@@ -55,7 +111,7 @@
             </div>
             <div class="card-body">
               
-              <input type="text" id="id" name="id" value="<?= $workOrdersData['vehicle_id'] ?>" hidden class="form-control ">
+              <input type="text" id="id" name="id" value="<?= $workOrdersData['workorder_id'] ?>" hidden class="form-control ">
               <input type="text" id="action" name="action" value="edit" hidden class="form-control ">
               <input type="text" id="customer_id" name="customer_id" value="<?= $workOrdersData['customer_id'] ?>" hidden class="form-control ">
 
@@ -176,6 +232,11 @@
             <div class="card-body">
               <div id="products-container">
                 <!-- Contenido existente -->
+                <?php
+                include '../controllers/InventoryController.php';
+                $inventory = new InventoryController();
+                ?>
+                <?php if(!isset($_GET['edit'])){ ?>
                 <div class="row">
                   <div class="col-3">
                     <div class="input-group input-group-static mb-4 mt-4">
@@ -183,8 +244,6 @@
                       <select class="form-control item" id="item" onchange="actualizarPrecio(this)" name="item[]">
                         <option value="">Seleccione un producto</option>
                         <?php
-                          include '../controllers/InventoryController.php';
-                          $inventory = new InventoryController();
                           $inventoryData = $inventory->get_inventories();
                           if ($inventoryData and count($inventoryData) > 0) {
                               // Recorre los resultados utilizando un bucle foreach
@@ -202,24 +261,67 @@
                   <div class="col-1">
                     <div class="input-group input-group-static mb-4 mt-4">
                       <label for="exampleFormControlSelect1" class="ms-0">Cantidad</label>
-                      <input type="text" required id="item_qty" name="cantidad[]"  onchange="actualizarPrecio(this)" value="1" class="form-control cantidad">
+                      <input type="number" required id="item_qty" name="cantidad[]"  onchange="actualizarPrecio(this)" value="1" class="form-control cantidad">
                     </div>
                   </div>
                   <div class="col-3">
                     <div class="input-group input-group-static mb-4 mt-4">
                       <label for="total" class="ms-0">Precio Total</label>
                       <input type="text" id="total" name="total[]" class="form-control total" readonly>
-                      </div>
+                    </div>
                   </div>
                 </div>
-                <!-- Fin del contenido existente -->
+                <?php }else{ 
+                  $workOrdersMaterialsUsed = $workOrders->get_workOrderMaterialsUsed($_GET['ot']);
+                  foreach ($workOrdersMaterialsUsed as $fila) { 
+                    $materialsused_inventories_id = $fila['inventories_id'];
+                    $materialsused_quantity_used = $fila['quantity_used'];
+                    $materialsused_total = $fila['total'];
+                    $materialsused_work_order_id = $fila['work_order_id'];
+                  ?>
+                <div class="row">
+                  <div class="col-3">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label for="exampleFormControlSelect1" class="ms-0">Item</label>
+                      <select class="form-control item" id="item" onchange="actualizarPrecio(this)" name="item[]">
+                        <option value="">Seleccione un producto</option>
+                        <?php
+                          
+                          $inventoryData = $inventory->get_inventories();
+                          if ($inventoryData and count($inventoryData) > 0) {
+                              // Recorre los resultados utilizando un bucle foreach
+                              foreach ($inventoryData as $fila) { 
+                                  $inventory_id = $fila['id'];
+                                  $inventory_item = $fila['item'];
+                                  $inventory_valor = $fila['valor'];
+                                  echo "<option " . ($inventory_id == $materialsused_inventories_id ? 'selected' : '') . " value=" . $inventory_id . " data-valor='" . $inventory_valor . "'>". $inventory_item ."</option>";
+                              }
+                          }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-1">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label for="exampleFormControlSelect1" class="ms-0">Cantidad</label>
+                      <input type="number" required id="item_qty" name="cantidad[]"  onchange="actualizarPrecio(this)" value="<?= $materialsused_quantity_used ?>" class="form-control cantidad">
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="input-group input-group-static mb-4 mt-4">
+                      <label for="total" class="ms-0">Precio Total</label>
+                      <input type="text" id="total" name="total[]" value="<?= $materialsused_total ?>" class="form-control total" readonly>
+                    </div>
+                  </div>
+                </div>
+                <?php } } ?> 
                 <div id="productos-dinamicos"></div>
-            </div>
+              </div>
+                <!-- Fin del contenido existente -->
             <div class="col-3">
               <div class="input-group input-group-static mb-4 mt-4">
                 <label for="exampleFormControlSelect1" class="ms-0">Aseguradora</label>
-                <select class="form-control aseguradora" id="aseguradora" onchange="actualizarPrecio(this)" name="aseguradora">
-                  <option value="">-- Aseguradora --</option>
+                <select class="form-control aseguradora" id="aseguradora" required onchange="actualizarPrecio(this)" name="aseguradora">
                   <?php
                     include '../controllers/InsuranceController.php';
                     $insurance = new InsuranceController();
@@ -242,10 +344,10 @@
                 </select>
               </div>
             </div>
-            <div class="col-1">
+            <div class="col-2">Total Cotizacion
               <div class="input-group input-group-dynamic mb-4">
                 <span class="input-group-text">$ CLP</span>
-                <input type="text" id="suma-total" name="suma_total" class="form-control" readonly>
+                <input type="text" id="suma-total" name="suma_total" <?php echo (isset($_GET['edit']) ? "value=".$workOrdersData['total_amount'] : '' )?> class="form-control" readonly>
               </div>
             </div>
             <div class="col-1">
@@ -255,7 +357,7 @@
             <div class="col-2">
               <div class="input-group input-group-static mb-4 mt-4">
                 <label for="exampleFormControlSelect1" class="ms-0">Mecanico</label>
-                <select class="form-control" id="mecanico" name="mecanico">
+                <select class="form-control" id="mecanico" required name="mecanico">
                   <option value="">-- MECANICO --</option>
                   <?php
                     include '../controllers/UserController.php';
@@ -266,7 +368,7 @@
                         foreach ($userData as $fila) { 
                             $user_id = $fila['user_id'];
                             $user_name = $fila['user_name'];
-                            echo "<option value=" . $user_id . ">". $user_name ."</option>";
+                            echo "<option " . ($user_id == $workOrdersData['user_id'] ? 'selected' : '') . " value=" . $user_id . ">". $user_name ."</option>";
                         }
                     }
                   ?>
@@ -275,7 +377,7 @@
             </div>
             
               <div class="" >
-                  <button type="submit" class="btn bg-gradient-success btn-lg w-100 " style="justify-content: center;margin: auto;">Guardar</button>
+                  <button type="submit" class="btn bg-gradient-danger btn-lg w-100 " style="justify-content: center;margin: auto;">Guardar</button>
               </div>
           </div>
         </div>
@@ -296,63 +398,7 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.1.0"></script>
-  <script>
-let contadorProductos = 1; // Inicializamos en 1 ya que ya hay una fila existente.
-
-function agregarProducto() {
-      const container = document.getElementById("products-container");
-      const nuevaFila = container.firstElementChild.cloneNode(true);
-
-      contadorProductos++;
-
-      // Cambia los IDs de los nuevos elementos
-      const nuevoItem = nuevaFila.querySelector(".item");
-      nuevoItem.id = `producto${contadorProductos}`;
-
-      const nuevaCantidad = nuevaFila.querySelector(".cantidad");
-      nuevaCantidad.id = `cantidad${contadorProductos}`;
-      nuevaCantidad.setAttribute("data-valor", "0"); // Puedes establecerlo en el valor predeterminado deseado
-
-      const nuevoTotal = nuevaFila.querySelector(".total");
-      nuevoTotal.id = `total${contadorProductos}`;
-      nuevoTotal.value = ""; // Limpia el valor del nuevo total
-
-      container.appendChild(nuevaFila);
-    }
-
-    function actualizarPrecio(elemento) {
-      const container = elemento.closest(".row");
-      const selectItem = container.querySelector(".item");
-      const valorSeleccionado = selectItem.options[selectItem.selectedIndex].getAttribute("data-valor");
-      const cantidadInput = container.querySelector(".cantidad");
-      const totalInput = container.querySelector(".total");
-      const sumaTotalInput = document.getElementById("suma-total");
-      let sumaTotal = 0;
-      const cantidad = cantidadInput.value;
-      const precioTotal = valorSeleccionado * cantidad;
-      // Obtener el valor de la cobertura de la aseguradora seleccionada
-      const selectAseguradora = document.getElementById("aseguradora");
-      const cobertura = selectAseguradora.options[selectAseguradora.selectedIndex].getAttribute("data-cobertura");
-
-      totalInput.value = precioTotal;
-      
-      // Recorre todas las filas y suma los totales
-      const filas = document.querySelectorAll("#products-container .row");
-      filas.forEach((fila) => {
-        console.log(fila);
-          const totalInput = fila.querySelector(".total");
-          const total = parseFloat(totalInput.value) || 0; // Convierte el valor a número, o usa 0 si no es un número
-          sumaTotal += total;
-      });
-      // Aplicar descuento de la cobertura
-      if (cobertura) {
-        const descuento = sumaTotal * cobertura;
-        sumaTotal -= descuento;
-      }
-      sumaTotalInput.value = sumaTotal.toFixed(0); // Formatea el resultado con dos decimales
-      
-    }
-  </script>
+  
 </body>
 
 </html>
