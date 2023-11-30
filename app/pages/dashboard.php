@@ -1,7 +1,7 @@
 <?php
 session_start();
 if($_SESSION['usuario']['Role_Name'] == 'MECANICO'){
-  header("Location: ./tables.php");
+  header("Location: ./ots.php");
   exit;
 }
 if($_SESSION['usuario']['Role_Name'] == 'BODEGA'){

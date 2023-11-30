@@ -37,7 +37,7 @@ $last_value = end($path_parts);
           </a>
         </li>
         <?php } ?>
-        <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN','SUPERVISOR'])){?>
+        <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN','SUPERVISOR','MECANICO'])){?>
         <li class="nav-item">
           <a class="nav-link text-white <?php if(strpos($last_value, 'ots') !==false  or strpos($last_value, 'ordentrabajo') !==false) { echo 'active bg-gradient-primary';} ?>" href="../pages/ots.php">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

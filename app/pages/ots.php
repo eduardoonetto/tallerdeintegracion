@@ -1,9 +1,5 @@
 <?php
 session_start();
-if($_SESSION['usuario']['Role_Name'] == 'MECANICO'){
-  header("Location: ./tables.php");
-  exit;
-}
 if($_SESSION['usuario']['Role_Name'] == 'BODEGA'){
   header("Location: ./inventario.php");
   exit;
