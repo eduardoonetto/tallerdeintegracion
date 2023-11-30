@@ -3,10 +3,8 @@
 function CargaData(data) {
     console.log(data);
     document.getElementById("nombre").setAttribute("value", data.name);
-    document.getElementById("rut").setAttribute("value", data.rut);
     document.getElementById("email").setAttribute("value", data.email);
-    document.getElementById("telefono").setAttribute("value", data.phone);
-    document.getElementById("direccion").setAttribute("value", data.address);
+    document.getElementById("cargo").value = data.cargo;
     
     document.getElementById("action").setAttribute("value", "edit");
     document.getElementById("id").setAttribute("value", data.id);

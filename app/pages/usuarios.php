@@ -44,43 +44,41 @@
               </div>
             </div>
             <div class="card-body">
-              <form action="../processor/transactioner?tx=customer" method="POST">
-              <input type="text" id="id" name="id" value="" hidden class="form-control ">
+              <form action="../processor/transactioner?tx=users" method="POST">
               <input type="text" id="action" name="action" value="new" hidden class="form-control ">
 
               <h5>Datos:</h5>
                 <div class="row">
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Nombre Dueño</label>
-                      <input type="text" name="nombre" id="nombre" required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Nombre</label>
+                      <input type="text" required id="name"  name="name" class="form-control ">
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">RUT</label>
-                      <input type="text" id="rut" name="rut" required class="form-control ">
-                      <p id="mensaje"></p>
-                    </div>
-                  </div>
-                  <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Correo Electronico</label>
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Correo Electronico</label>
                       <input type="email" name="email" id="email" required class="form-control ">
                     </div>
                   </div>
                   <div class="col-2">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Telefono</label>
-                      <input type="text" name="telefono" id="telefono"  required class="form-control ">
+                  <div class="input-group input-group-static mb-4">
+                      <label class="ms-0">Password</label>
+                      <input type="password" name="password" id="password" required class="form-control ">
                     </div>
                   </div>
-                  <div class="col-3">
-                    <div class="input-group input-group-static mb-4 mt-4">
-                      <label class="form-label">Direccion</label>
-                      <input type="text" name="direccion" id="direccion" required class="form-control ">
+                  <div class="col-2">
+                    <div class="input-group input-group-static mb-4">
+                      <label for="exampleFormControlSelect1" class="ms-0">Modelo</label>
+                      <select class="form-control" name="role" id="role" required id="role">
+                        <option value="1">ADMINISTRADOR</option>
+                        <option value="2">SUPERVISOR</option>
+                        <option value="3">BODEGA</option>
+                        <option value="4">MECANICO</option>
+                      </select>
                     </div>
                   </div>
+                  
                 </div>
                 <div class="row">
                     <div class="col-3">
@@ -119,35 +117,30 @@
                 <table class="table align-items-center mb-0" >
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre/Email</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Datos</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rut</th>
-                      <th class="text-secondary opacity-7"></th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cargo</th>
                       <th class="text-secondary opacity-7"></th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                        include '../controllers/CustomerController.php';
-                        $customer = new CustomerController();
-                        $customerData = $customer->get_customers();
-                        if ($customerData and count($customerData) > 0) {
-                            // Recorre los resultados utilizando un bucle foreach
-                            foreach ($customerData as $fila) { 
-                                $customer_id = $fila['id'];
-                                $customer_name = $fila['name'];
-                                $customer_email = $fila['email'];
-                                $customer_phone = $fila['phone'];
-                                $customer_address = $fila['address'];
-                                $customer_rut = $fila['rut'];
+                        include '../controllers/UserController.php';
+                        $user = new UserController();
+                        $users = $user->get_users_with_role();
+                        if (count($users) > 0) {
+                            foreach ($users as $user) {
+                                $user_id = $user['user_id'];
+                                $user_name = $user['user_name'];
+                                $user_email = $user['user_email'];
+                                $user_role = $user['role_id'];
+                                $user_rolename = $user['role_name'];
                                 $jsonData = json_encode(array(
-                                    'id' => $customer_id,
-                                    'name' => $customer_name,
-                                    'email' => $customer_email,
-                                    'phone' => $customer_phone,
-                                    'address' => $customer_address,
-                                    'rut' => $customer_rut
-                                ));                                
+                                    'id' => $user_id,
+                                    'nombre' => $user_name,
+                                    'email' => $user_email
+                                ));
+                                             
                     ?>
                     <tr>
                       <td>
@@ -156,25 +149,20 @@
                             <img src="https://cdn.iconscout.com/icon/free/png-256/free-user-1648810-1401302.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm"><?= $customer_name ?></h6>
-                            <p class="text-xs text-secondary mb-0"><?= $customer_email ?></p>
+                            <h6 class="mb-0 text-sm"><?= $user_name ?></h6>
+                            <p class="text-xs text-secondary mb-0"><?= $user_email ?></p>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0"><?= $customer_phone ?></p>
-                        <p class="text-xs text-secondary  mb-0">Direccion: <?= $customer_address ?></p>
+                      <h6 class="mb-0 text-sm"><?= $user_email ?></h6>
                       </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold"><?= $customer_rut ?></span>
+                      <td>
+                      <h6 class="mb-0 text-sm"><?= $user_rolename ?></h6>
                       </td>
+                      
                       <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-warning excluir" data-toggle="tooltip" onclick="CargaData(<?php echo htmlspecialchars($jsonData, ENT_QUOTES, 'UTF-8') ?> )" data-original-title="Edit user">
-                          Edit
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <a class="text-secondary font-weight-bold text-xs text-danger excluir" data-toggle="tooltip" href="../processor/transactioner?tx=customer&id=<?php echo $customer_id ?>&action=delete" data-original-title="Delete user">
+                        <a class="text-secondary font-weight-bold text-xs text-danger excluir" data-toggle="tooltip" href="../processor/transactioner?tx=users&id=<?php echo $user_id ?>&action=delete" data-original-title="Delete user">
                           Borrar
                         </a>
                       </td>

@@ -8,6 +8,7 @@ include '../controllers/InventoryController.php';
 include '../controllers/CustomerController.php';
 include '../controllers/workerController.php';
 include '../controllers/WorkOrdersController.php';
+include '../controllers/UserController.php';
 $auth = new AuthController();
 $vehicle = new VehicleController();
 $insurance = new InsuranceController();
@@ -15,6 +16,7 @@ $inventory = new InventoryController();
 $customer = new CustomerController();
 $worker = new WorkerController();
 $WorkOrders = new WorkOrdersController();
+$Users = new UserController();
 
 
 // Llama al método login
@@ -97,4 +99,12 @@ switch ($_GET['tx']) {
             $WorkOrders->update_status($_GET['id_ot'], 'Anulada');
         }
         break;
+    case 'users':
+        if(isset($_POST['action']) and $_POST['action'] == 'new'){
+            $Users->new_user($_POST);
+        }else if(isset($_GET['action']) and $_GET['action'] == 'delete' and isset($_GET['id'])){
+            $Users->delete_user($_GET['id']);
+        }
+        break;
+
 }

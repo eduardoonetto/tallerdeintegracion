@@ -13,6 +13,44 @@ class UserModel {
         return $conexion; 
     }
 
+    public function new_user($name, $email, $password, $change_password) {
+        $passwordMd5 = md5($password);
+
+        $query = "INSERT INTO " . $this->table . " (name, email, password, change_password) VALUES ('$name', '$email', '$passwordMd5', '$change_password')";
+        if(mysqli_query($this->conexion, $query)){
+            return mysqli_insert_id($this->conexion);
+        }else{
+            return false;
+        }
+    }
+
+    public function new_user_role($user_id, $role_id) {
+        $query = "INSERT INTO Users_Roles (user_id, role_id) VALUES ('$user_id', '$role_id')";
+        return mysqli_query($this->conexion, $query);
+    }
+
+    public function delete_user($id) {
+        $query = "DELETE FROM " . $this->table . " WHERE id = '$id'";
+        return mysqli_query($this->conexion, $query);
+    }
+
+    public function get_users_with_role(){
+        $query = "SELECT
+        U.name AS user_name,
+        U.id AS user_id,
+        U.email AS user_email,
+        R.name AS role_name,
+        R.id AS role_id
+        FROM
+            Users AS U
+        JOIN Users_Roles AS UR ON U.id = UR.user_id
+        JOIN Roles AS R ON UR.role_id = R.id";
+
+        $resultado = mysqli_query($this->conexion, $query);
+        mysqli_close($this->conexion);
+        return mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+    }
+
     public function obtenerUsuarios() {
         $query = "SELECT * FROM " . $this->table;
         $resultado = mysqli_query($this->conexion, $query);
