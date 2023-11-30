@@ -39,7 +39,7 @@ $last_value = end($path_parts);
         <?php } ?>
         <?php if(in_array($_SESSION['usuario']['Role_Name'], ['ADMIN','SUPERVISOR'])){?>
         <li class="nav-item">
-          <a class="nav-link text-white <?php echo (strpos($last_value, 'ordentrabajo')!==false ? 'active bg-gradient-primary': '' ) ?>" href="../pages/ordentrabajo.php">
+          <a class="nav-link text-white <?php if(strpos($last_value, 'ots') !==false  or strpos($last_value, 'ordentrabajo') !==false) { echo 'active bg-gradient-primary';} ?>" href="../pages/ots.php">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">list</i>
             </div>

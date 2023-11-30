@@ -69,4 +69,26 @@ class UserModel {
             return false; // Usuario no encontrado
         }
     }
+
+    public function count_users() {
+        $query = "SELECT COUNT(*) AS total_users FROM " . $this->table;
+        $resultado = mysqli_query($this->conexion, $query);
+    
+        // Verificar si la consulta se ejecutó correctamente
+        if (!$resultado) {
+            die('Error en la consulta: ' . mysqli_error($this->conexion));
+        }
+    
+        // Obtener los resultados antes de cerrar la conexión
+        $row = mysqli_fetch_assoc($resultado);
+    
+    
+        return $row;
+    }
+
+    public function close_connection() {
+        mysqli_close($this->conexion);
+    }
+
+
 }

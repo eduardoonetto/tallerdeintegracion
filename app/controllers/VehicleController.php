@@ -74,7 +74,7 @@
                 //insertar OT:
                 $otData   = $this->WorkOrders->insert_ot($vehicleDataId, $fecha_in,  $razon, $description, 'Pendiente');
                 if($otData){
-                    header("Location: ../pages/vehicles?success=1");
+                    header("Location: ../pages/ots?success=1");
                 }
             }
         }

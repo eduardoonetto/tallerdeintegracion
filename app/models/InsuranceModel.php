@@ -77,4 +77,14 @@ class InsuranceModel {
             return false; // Error en la inserción
         }
     }
+
+    public function count_insurances_vigentes() {
+        $query = "SELECT COUNT(*)-1 AS total FROM " . $this->table . " WHERE end_date > CURDATE()";
+        $resultado = mysqli_query($this->conexion, $query);
+        return mysqli_fetch_assoc($resultado);
+    }
+
+    public function close_connection() {
+        mysqli_close($this->conexion);
+    }
 }

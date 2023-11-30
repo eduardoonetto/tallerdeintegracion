@@ -87,4 +87,14 @@ switch ($_GET['tx']) {
             $WorkOrders->deleteWorker($_GET);
         }
         break;
+    case 'completarOt':
+        if(isset($_GET['id_ot'])){
+            $WorkOrders->update_status($_GET['id_ot'], 'Completada');
+        }
+        break;
+    case 'AnularOt':
+        if(isset($_GET['id_ot'])){
+            $WorkOrders->update_status($_GET['id_ot'], 'Anulada');
+        }
+        break;
 }
